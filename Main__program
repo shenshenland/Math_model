@@ -1,0 +1,68 @@
+import numpy as np 
+import matplotlib.pyplot as plt 
+import openpyxl as opl 
+import pandas as pd 
+from datetime import datetime
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+def month_select(value):
+    datetime_obj = datetime.strptime(str(value),"%Y-%m-%d %H:%M:%S")
+    month = datetime_obj.month
+    return(month)
+def year_select(value):
+    datetime_obj = datetime.strptime(str(value),"%Y-%m-%d %H:%M:%S")
+    year = datetime_obj.year
+    return(year)
+def day_select(value):
+    datetime_obj = datetime.strptime(str(value),"%Y-%m-%d %H:%M:%S")
+    day = datetime_obj.day
+    return(day)
+# 时间选取
+
+workbook_1 = opl.load_workbook(r"D:\数学竞赛·\不同的编码与价格.xlsx")
+workbook_2 = opl.load_workbook(r"D:\数学竞赛·\单品，编码，分类.xlsx")
+workbook_3 = opl.load_workbook(r"D:\数学竞赛·\流水信息.xlsx")
+workbook_4 = opl.load_workbook(r"D:\数学竞赛·\损耗率及其单品.xlsx") 
+# 在以上路径中选择自己的文件路径
+
+# 选择工作表
+wk_1 = workbook_1['Sheet1']
+wk_2 = workbook_2['Sheet1']
+wk_3 = workbook_3['Sheet1']
+wk_4 = workbook_4['Sheet1']
+
+len_1_row =wk_1.max_row
+len_1_col =wk_1.max_column
+
+len_2_row =wk_2.max_row
+len_2_col =wk_2.max_column
+
+len_3_row =wk_3.max_row
+len_3_col =wk_3.max_column
+
+len_4_row =wk_4.max_row
+len_4_col =wk_4.max_column
+
+time_series_dict = {}
+
+# 在循环中查找特定条件的单元格
+for i in range(2, len_3_row):
+    if wk_3.cell(i, 3).value == '102900005115168':
+        # 获取日期信息
+        year = year_select(wk_3.cell(i, 1).value)
+        month = month_select(wk_3.cell(i, 1).value)
+        day = day_select(wk_3.cell(i, 1).value)
+        
+        # 构建字典键的名称
+        key = '{}_{}_{}'.format(year, month, day)
+        # 检查字典中是否存在指定键，如果不存在，则创建一个新的列表
+        if key not in time_series_dict:
+            time_series_dict[key] = wk_3.cell(i,4).value
+        else:
+            time_series_dict[key] += wk_3.cell(i,4).value 
+
+        # 将 time_series 添加到列表中
+
+print(time_series_dict)
+
+
